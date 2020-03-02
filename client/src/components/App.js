@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Router, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 import { createBrowserHistory } from 'history';
@@ -8,20 +8,38 @@ import { actionCreators } from '../store/userReducer'
 import "materialize-css/dist/css/materialize.min.css";
 import "materialize-css/dist/js/materialize.min.js";
 
+//websocket
+import socket  from '../websocket'
+
+//components
 import Header from './Header'
 
+//pages
 import Landing from '../pages/Landing'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 
+//history
 export const history = createBrowserHistory()
-
-const Dashboard =()=><h1>Home</h1>
 
 const App = ({ fetchUser }) => {
 
   useEffect(() => {
+    socket.emit('serverPing')
+
+    socket.on('returnPing', (data) => {
+      console.log(data)
+    })
+
+    socket.on('newUser', ()=> {
+      console.log('theres a new user!')
+    })
+
     fetchUser()
+    return () => {
+      socket.off('returnPing')
+    }
+    
   }, []);
 
   return (

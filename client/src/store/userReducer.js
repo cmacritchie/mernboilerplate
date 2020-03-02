@@ -19,7 +19,7 @@ export const actionCreators = {
             const res = await axios.get('/api/users/me', config(token))
             dispatch({
                 type: FETCH_USER, 
-                payload:res.data
+                payload:{user:res.data, token }
             });
         }
     },
@@ -75,9 +75,10 @@ export const reducer = (state = initialState, action) => {
         case FETCH_USER:
             return {
                 ...state,
+                token: payload.token,
                 isAuthenticated: true,
                 loading: false,
-                user: payload
+                user: payload.user
             }
         case USER_REGISTER_SUCCESS:
             return {
